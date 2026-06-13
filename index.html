@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClickerCoin Miner & Trader</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="welcome-screen">
+<div class="welcome-content">
+<div style="font-size: 4rem; margin-bottom: 20px;">🚀</div>
+<h2>Let's become rich!</h2>
+<button id="start-game-btn">Let's go!</button>
+</div>
+</div>
+
+<div class="game-container">
+<div style="font-size: 5rem; margin-bottom: 10px;">🪙</div>
+
+<h1>ClickerCoin (CLC)</h1>
+
+<div class="stats-grid">
+<div class="score-box">
+<p class="balance-label">Your Balance</p>
+<div class="score"><span id="score">0</span> <span class="ticker">CLC</span></div>
+</div>
+<div class="score-box">
+<p class="balance-label">Current Price</p>
+<div class="score">$<span id="clc-price">1.00</span></div>
+</div>
+</div>
+
+<div class="chart-container">
+<canvas id="cryptoChart"></canvas>
+</div>
+
+<div class="afk-status">AFK Mining: +<span id="afk-rate">0</span> CLC / 2s</div>
+
+<button id="clicker-btn">MINING</button>
+
+<div class="shop-container">
+<h3>Hardware & AI Shop</h3>
+
+<div class="upgrade-item">
+<button id="upgrade-1-btn" class="shop-btn">Upgrade GPU (+2/click)</button>
+<p>Cost: <span id="upgrade-1-cost">10</span> CLC</p>
+</div>
+
+<div class="upgrade-item">
+<button id="upgrade-2-btn" class="shop-btn">Buy ASIC Miner (+5/click)</button>
+<p>Cost: <span id="upgrade-2-cost">50</span> CLC</p>
+</div>
+
+<div class="upgrade-item bot-item">
+<button id="bot-btn" class="shop-btn bot-btn">Hire AI Miner (+1 CLC/2s)</button>
+<p>Cost: <span id="bot-cost">100</span> CLC</p>
+</div>
+</div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
