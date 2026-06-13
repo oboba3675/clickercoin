@@ -3,64 +3,612 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClickerCoin Miner & Trader</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Cyber Clicker v5.1 - Live Chart Grid</title>
+<style>
+:root {
+--bg-color: #0a0a12;
+--panel-bg: #121225;
+--neon-green: #39ff14;
+--neon-cyan: #00f3ff;
+--neon-pink: #ff0055;
+--text-color: #e0e0ff;
+}
+
+body {
+font-family: 'Segoe UI', Roboto, sans-serif;
+background-color: var(--bg-color);
+color: var(--text-color);
+margin: 0;
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+user-select: none;
+overflow: hidden;
+}
+
+.screen {
+position: absolute;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 100%;
+transition: opacity 0.3s ease;
+}
+
+.hidden {
+display: none !important;
+}
+
+.menu-box {
+text-align: center;
+background: var(--panel-bg);
+padding: 30px;
+border-radius: 24px;
+border: 1px solid rgba(57, 255, 20, 0.2);
+box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
+width: 380px;
+box-sizing: border-box;
+}
+
+.menu-box h1 {
+font-size: 2.3rem;
+color: var(--neon-green);
+text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+margin: 0 0 15px 0;
+letter-spacing: 2px;
+}
+
+.crypto-ticker {
+background: rgba(0, 0, 0, 0.4);
+border-radius: 12px;
+padding: 12px;
+margin-bottom: 15px;
+border: 1px solid rgba(0, 243, 255, 0.1);
+}
+
+.ticker-label {
+font-size: 0.75rem;
+color: #8080af;
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-bottom: 4px;
+}
+
+.ticker-rate {
+font-size: 1.3rem;
+font-weight: bold;
+color: #fff;
+transition: color 0.3s ease;
+}
+
+.rate-up { color: var(--neon-green) !important; text-shadow: 0 0 8px rgba(57, 255, 20, 0.4); }
+.rate-down { color: var(--neon-pink) !important; text-shadow: 0 0 8px rgba(255, 0, 85, 0.4); }
+
+/* БЛОК СЕТКИ И ГРАФИКА */
+.chart-container {
+position: relative;
+background: #06060c;
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 12px;
+margin-bottom: 20px;
+height: 110px;
+overflow: hidden;
+box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+}
+
+.chart-canvas {
+display: block;
+width: 100%;
+height: 100%;
+}
+
+.menu-stats {
+display: flex;
+justify-content: space-between;
+background: rgba(255, 255, 255, 0.02);
+padding: 10px;
+border-radius: 12px;
+margin-bottom: 20px;
+font-size: 0.85rem;
+border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.menu-stat-item { color: #a0a0cf; }
+.menu-stat-item span { color: var(--neon-cyan); font-weight: bold; }
+
+.menu-btn {
+background: transparent;
+border: 2px solid var(--neon-cyan);
+color: var(--neon-cyan);
+padding: 14px 0;
+width: 100%;
+font-size: 1.2rem;
+font-weight: bold;
+border-radius: 12px;
+cursor: pointer;
+text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+transition: all 0.2s ease;
+}
+
+.menu-btn:hover {
+background: var(--neon-cyan);
+color: var(--bg-color);
+box-shadow: 0 0 25px var(--neon-cyan);
+}
+
+/* ИГРОВОЙ ЭКРАН */
+.game-wrapper {
+background: var(--panel-bg);
+padding: 25px;
+border-radius: 24px;
+box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
+border: 1px solid rgba(57, 255, 20, 0.2);
+width: 380px;
+box-sizing: border-box;
+}
+
+.stats-panel {
+display: flex;
+justify-content: space-between;
+margin-bottom: 15px;
+}
+
+.stat-box {
+background: rgba(255, 255, 255, 0.03);
+padding: 10px 15px;
+border-radius: 12px;
+border: 1px solid rgba(255, 255, 255, 0.05);
+width: 45%;
+text-align: center;
+}
+
+.income-panel {
+background: rgba(0, 243, 255, 0.05);
+border: 1px solid rgba(0, 243, 255, 0.1);
+border-radius: 12px;
+padding: 10px;
+text-align: center;
+margin-bottom: 20px;
+font-size: 0.9rem;
+}
+
+.income-line { margin-bottom: 4px; }
+.income-line:last-child { margin-bottom: 0; }
+.income-value { color: var(--neon-cyan); font-weight: bold; text-shadow: 0 0 5px var(--neon-cyan); }
+
+.stat-label {
+font-size: 0.8rem;
+color: #8080af;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.stat-value {
+font-size: 1.5rem;
+font-weight: bold;
+color: var(--neon-green);
+text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.click-zone {
+display: flex;
+justify-content: center;
+margin-bottom: 25px;
+position: relative;
+}
+
+.neon-core {
+width: 130px;
+height: 130px;
+border-radius: 50%;
+border: none;
+background: radial-gradient(circle, #fff 0%, var(--neon-green) 60%, #006400 100%);
+cursor: pointer;
+box-shadow: 0 0 35px var(--neon-green);
+transition: transform 0.05s ease;
+outline: none;
+animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+0% { box-shadow: 0 0 25px var(--neon-green); transform: scale(1); }
+50% { box-shadow: 0 0 45px var(--neon-green); transform: scale(1.03); }
+100% { box-shadow: 0 0 25px var(--neon-green); transform: scale(1); }
+}
+
+.neon-core:active {
+transform: scale(0.93) !important;
+box-shadow: 0 0 15px var(--neon-cyan);
+}
+
+.floating-number {
+position: absolute;
+color: var(--neon-green);
+font-weight: bold;
+font-size: 1.4rem;
+pointer-events: none;
+text-shadow: 0 0 8px var(--neon-green);
+animation: floatUp 0.6s ease-out forwards;
+z-index: 10;
+}
+
+.floating-number.crit {
+color: var(--neon-pink);
+font-size: 1.9rem;
+text-shadow: 0 0 12px var(--neon-pink);
+}
+
+@keyframes floatUp {
+0% { opacity: 1; transform: translateY(0px) scale(1); }
+100% { opacity: 0; transform: translateY(-70px) scale(0.7); }
+}
+
+.shop-panel h3 {
+margin: 0 0 15px 0;
+font-size: 1.1rem;
+color: #a0a0cf;
+text-align: center;
+}
+
+.shop-btn {
+width: 100%;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 12px;
+padding: 12px;
+color: #fff;
+cursor: pointer;
+margin-bottom: 12px;
+transition: all 0.2s ease;
+}
+
+.shop-btn:not(:disabled):hover {
+background: rgba(57, 255, 20, 0.1);
+border-color: var(--neon-green);
+box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+}
+
+.shop-btn:disabled {
+opacity: 0.3;
+cursor: not-allowed;
+}
+
+.btn-info {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.btn-title { font-weight: 600; }
+.btn-cost { color: var(--neon-green); font-size: 0.9rem; }
+
+.reset-link {
+display: block;
+margin: 15px auto 0;
+background: none;
+border: none;
+color: #505070;
+cursor: pointer;
+font-size: 0.8rem;
+text-decoration: underline;
+}
+.reset-link:hover { color: var(--neon-pink); }
+</style>
 </head>
 <body>
 
-<div id="welcome-screen">
-<div class="welcome-content">
-<div style="font-size: 4rem; margin-bottom: 20px;">🚀</div>
-<h2>Let's become rich!</h2>
-<button id="start-game-btn">Let's go!</button>
-</div>
+<!-- MENU SCREEN -->
+<div id="menu-screen" class="screen">
+<div class="menu-box">
+<h1>CYBER CLICKER</h1>
+
+<div class="crypto-ticker">
+<div class="ticker-label">Live Clickercoin Rate</div>
+<div id="menu-rate-display" class="ticker-rate">1 CLK = $1.25</div>
 </div>
 
-<div class="game-container">
-<div style="font-size: 5rem; margin-bottom: 10px;">🪙</div>
-
-<h1>ClickerCoin (CLC)</h1>
-
-<div class="stats-grid">
-<div class="score-box">
-<p class="balance-label">Your Balance</p>
-<div class="score"><span id="score">0</span> <span class="ticker">CLC</span></div>
-</div>
-<div class="score-box">
-<p class="balance-label">Current Price</p>
-<div class="score">$<span id="clc-price">1.00</span></div>
-</div>
-</div>
-
+<!-- Координатная сетка графика (Меню) -->
 <div class="chart-container">
-<canvas id="cryptoChart"></canvas>
+<canvas id="menu-chart" class="chart-canvas" width="320" height="110"></canvas>
 </div>
 
-<div class="afk-status">AFK Mining: +<span id="afk-rate">0</span> CLC / 2s</div>
-
-<button id="clicker-btn">MINING</button>
-
-<div class="shop-container">
-<h3>Hardware & AI Shop</h3>
-
-<div class="upgrade-item">
-<button id="upgrade-1-btn" class="shop-btn">Upgrade GPU (+2/click)</button>
-<p>Cost: <span id="upgrade-1-cost">10</span> CLC</p>
+<div class="menu-stats">
+<div class="menu-stat-item">Balance: <span id="menu-score">$0.00</span></div>
+<div class="menu-stat-item">Multiplier: <span id="menu-power">x1</span></div>
 </div>
 
-<div class="upgrade-item">
-<button id="upgrade-2-btn" class="shop-btn">Buy ASIC Miner (+5/click)</button>
-<p>Cost: <span id="upgrade-2-cost">50</span> CLC</p>
-</div>
-
-<div class="upgrade-item bot-item">
-<button id="bot-btn" class="shop-btn bot-btn">Hire AI Miner (+1 CLC/2s)</button>
-<p>Cost: <span id="bot-cost">100</span> CLC</p>
-</div>
+<button id="start-game-btn" class="menu-btn">START GAME</button>
 </div>
 </div>
 
-<script src="script.js" defer></script>
+<!-- GAME SCREEN -->
+<div id="game-screen" class="screen hidden">
+<div class="game-wrapper">
+<div class="stats-panel">
+<div class="stat-box">
+<span class="stat-label">Balance</span>
+<div class="stat-value" id="score">$0.00</div>
+</div>
+<div class="stat-box">
+<span class="stat-label">Power</span>
+<div class="stat-value" id="click-power">x1</div>
+</div>
+</div>
+
+<div class="income-panel">
+<div class="income-line">Bot Passive: <span id="income-rate" class="income-value">$0.00</span> / sec</div>
+<div class="income-line">Market Rate: <span id="game-rate-display" class="income-value" style="color:#fff;">$1.25</span></div>
+</div>
+
+<!-- Координатная сетка графика (Прямо внутри игры) -->
+<div class="chart-container">
+<canvas id="game-chart" class="chart-canvas" width="330" height="110"></canvas>
+</div>
+
+<div class="click-zone">
+<button id="target-core" class="neon-core"></button>
+</div>
+
+<div class="shop-panel">
+<h3>Upgrades (USD)</h3>
+
+<button id="buy-click" class="shop-btn" disabled>
+<div class="btn-info">
+<span class="btn-title">Upgrade Click (+1)</span>
+<span class="btn-cost"><span id="click-cost">$15.00</span></span>
+</div>
+</button>
+
+<button id="buy-bot" class="shop-btn" disabled>
+<div class="btn-info">
+<span class="btn-title">Buy Auto-Bot (+1/s)</span>
+<span class="btn-cost"><span id="bot-cost">$50.00</span></span>
+</div>
+</button>
+
+<button id="reset-btn" class="reset-link">Reset Progress</button>
+</div>
+</div>
+</div>
+
+<!-- JAVASCRIPT LOGIC -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+let gameState = JSON.parse(localStorage.getItem('clicker_save')) || {
+score: 0.00,
+clickPower: 1,
+botClicks: 0,
+clickCost: 15,
+botCost: 50
+};
+
+let currentCoinRate = 1.25;
+let priceHistory = [1.15, 1.25, 1.20, 1.35, 1.25, 1.30, 1.45, 1.25];
+const maxHistoryLength = 14;
+
+const menuScreen = document.getElementById('menu-screen');
+const gameScreen = document.getElementById('game-screen');
+const startGameBtn = document.getElementById('start-game-btn');
+
+const scoreEl = document.getElementById('score');
+const clickPowerEl = document.getElementById('click-power');
+const incomeRateEl = document.getElementById('income-rate');
+const clickCostEl = document.getElementById('click-cost');
+const botCostEl = document.getElementById('bot-cost');
+const targetCore = document.getElementById('target-core');
+const buyClickBtn = document.getElementById('buy-click');
+const buyBotBtn = document.getElementById('buy-bot');
+const resetBtn = document.getElementById('reset-btn');
+
+const menuScoreEl = document.getElementById('menu-score');
+const menuPowerEl = document.getElementById('menu-power');
+const menuRateDisplay = document.getElementById('menu-rate-display');
+const gameRateDisplay = document.getElementById('game-rate-display');
+
+const menuCanvas = document.getElementById('menu-chart');
+const gameCanvas = document.getElementById('game-chart');
+
+function calculateEarnings(basePower) {
+return +(basePower * currentCoinRate).toFixed(2);
+}
+
+// Рендеринг сетки координат и кривой тренда курса
+function drawChart(canvas) {
+if (!canvas) return;
+const ctx = canvas.getContext('2d');
+const w = canvas.width;
+const h = canvas.height;
+
+ctx.clearRect(0, 0, w, h);
+
+// 1. Рисуем координатную сетку линий
+ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+ctx.lineWidth = 1;
+
+// Горизонтальные уровни
+for (let y = 15; y < h; y += 20) {
+ctx.beginPath();
+ctx.moveTo(0, y);
+ctx.lineTo(w, y);
+ctx.stroke();
+}
+// Вертикальные временные отсечки
+for (let x = 25; x < w; x += 35) {
+ctx.beginPath();
+ctx.moveTo(x, 0);
+ctx.lineTo(x, h);
+ctx.stroke();
+}
+
+if (priceHistory.length < 2) return;
+
+const min = Math.min(...priceHistory) * 0.92;
+const max = Math.max(...priceHistory) * 1.08;
+const range = max - min;
+
+// 2. Отрисовка трендовой линии
+ctx.beginPath();
+ctx.lineWidth = 2.5;
+
+const isUp = priceHistory[priceHistory.length - 1] >= priceHistory[priceHistory.length - 2];
+ctx.strokeStyle = isUp ? '#39ff14' : '#ff0055';
+
+for (let i = 0; i < priceHistory.length; i++) {
+const x = (i / (maxHistoryLength - 1)) * w;
+const y = h - ((priceHistory[i] - min) / range) * h;
+
+if (i === 0) ctx.moveTo(x, y);
+else ctx.lineTo(x, y);
+}
+ctx.stroke();
+
+// Заполнение пространства под кривой (неоновая подсветка)
+ctx.lineTo((priceHistory.length - 1) / (maxHistoryLength - 1) * w, h);
+ctx.lineTo(0, h);
+const gradient = ctx.createLinearGradient(0, 0, 0, h);
+gradient.addColorStop(0, isUp ? 'rgba(57, 255, 20, 0.15)' : 'rgba(255, 0, 85, 0.15)');
+gradient.addColorStop(1, 'transparent');
+ctx.fillStyle = gradient;
+ctx.fill();
+}
+
+function updateCoinRate() {
+const change = (Math.random() * 0.4 - 0.18);
+const oldRate = currentCoinRate;
+currentCoinRate = Math.max(0.1, +(currentCoinRate + change).toFixed(2));
+
+priceHistory.push(currentCoinRate);
+if (priceHistory.length > maxHistoryLength) {
+priceHistory.shift();
+}
+
+drawChart(menuCanvas);
+drawChart(gameCanvas);
+
+const textContent = `1 CLK = $${currentCoinRate.toFixed(2)}`;
+menuRateDisplay.textContent = textContent;
+gameRateDisplay.textContent = `$${currentCoinRate.toFixed(2)}`;
+
+if (currentCoinRate >= oldRate) {
+menuRateDisplay.className = "ticker-rate rate-up";
+gameRateDisplay.style.color = "var(--neon-green)";
+} else {
+menuRateDisplay.className = "ticker-rate rate-down";
+gameRateDisplay.style.color = "var(--neon-pink)";
+}
+
+if (!gameScreen.classList.contains('hidden')) {
+const currentPassive = calculateEarnings(gameState.botClicks);
+incomeRateEl.textContent = `$${currentPassive.toFixed(2)}`;
+}
+}
+
+setInterval(updateCoinRate, 3000);
+updateCoinRate();
+
+function initMenuStats() {
+menuScoreEl.textContent = `$${gameState.score.toFixed(2)}`;
+menuPowerEl.textContent = `x${gameState.clickPower}`;
+drawChart(menuCanvas);
+}
+
+startGameBtn.addEventListener('click', () => {
+menuScreen.classList.add('hidden');
+gameScreen.classList.remove('hidden');
+updateInterface();
+setTimeout(() => drawChart(gameCanvas), 60);
+});
+
+function saveGame() {
+localStorage.setItem('clicker_save', JSON.stringify(gameState));
+}
+
+function updateInterface() {
+if (gameScreen.classList.contains('hidden')) return;
+
+scoreEl.textContent = `$${gameState.score.toFixed(2)}`;
+clickPowerEl.textContent = `x${gameState.clickPower}`;
+
+const currentPassive = calculateEarnings(gameState.botClicks);
+incomeRateEl.textContent = `$${currentPassive.toFixed(2)}`;
+
+clickCostEl.textContent = `$${gameState.clickCost}`;
+botCostEl.textContent = `$${gameState.botCost}`;
+
+buyClickBtn.disabled = gameState.score < gameState.clickCost;
+buyBotBtn.disabled = gameState.score < gameState.botCost;
+}
+
+function createFloatingNumber(e, value, isCrit) {
+const rect = targetCore.getBoundingClientRect();
+const x = e ? e.clientX : rect.left + rect.width / 2;
+const y = e ? e.clientY : rect.top + rect.height / 2;
+
+const num = document.createElement('div');
+num.className = 'floating-number';
+if (isCrit) num.classList.add('crit');
+num.textContent = isCrit ? `CRIT +$${value.toFixed(2)}` : `+$${value.toFixed(2)}`;
+num.style.left = `${x - 20}px`;
+num.style.top = `${y - 20}px`;
+
+document.body.appendChild(num);
+num.addEventListener('animationend', () => num.remove());
+}
+
+targetCore.addEventListener('click', (e) => {
+const isCrit = Math.random() < 0.10;
+let baseAmount = gameState.clickPower;
+let earnedDollars = calculateEarnings(baseAmount);
+
+if (isCrit) earnedDollars *= 3;
+
+gameState.score = +(gameState.score + earnedDollars).toFixed(2);
+createFloatingNumber(e, earnedDollars, isCrit);
+updateInterface();
+saveGame();
+});
+
+buyClickBtn.addEventListener('click', () => {
+if (gameState.score >= gameState.clickCost) {
+gameState.score = +(gameState.score - gameState.clickCost).toFixed(2);
+gameState.clickPower += 1;
+gameState.clickCost = Math.round(gameState.clickCost * 1.6);
+updateInterface();
+saveGame();
+}
+});
+
+buyBotBtn.addEventListener('click', () => {
+if (gameState.score >= gameState.botCost) {
+gameState.score = +(gameState.score - gameState.botCost).toFixed(2);
+gameState.botClicks += 1;
+gameState.botCost = Math.round(gameState.botCost * 1.8);
+updateInterface();
+saveGame();
+}
+});
+
+setInterval(() => {
+if (gameState.botClicks > 0) {
+const passivePerTick = calculateEarnings(gameState.botClicks) / 10;
+gameState.score = +(gameState.score + passivePerTick).toFixed(2);
+updateInterface();
+}
+}, 100);
+
+setInterval(saveGame, 3000);
+
+resetBtn.addEventListener('click', () => {
+if (confirm('Reset all progress?')) {
+localStorage.removeItem('clicker_save');
+location.reload();
+}
+});
+
+initMenuStats();
+});
+</script>
 </body>
 </html>
