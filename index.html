@@ -3,15 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber Clicker v5.1 - Live Chart Grid</title>
+<title>Cyber Clicker Universe - Ultimate Edition</title>
 <style>
 :root {
---bg-color: #0a0a12;
---panel-bg: #121225;
+--bg-color: #030308;
+--panel-bg: #0b0b16;
+--panel-border: rgba(255, 255, 255, 0.05);
 --neon-green: #39ff14;
 --neon-cyan: #00f3ff;
 --neon-pink: #ff0055;
---text-color: #e0e0ff;
+--neon-orange: #ffaa00;
+--neon-purple: #b026ff;
+--text-color: #e2e2ff;
 }
 
 body {
@@ -30,587 +33,963 @@ overflow: hidden;
 .screen {
 position: absolute;
 display: flex;
-justify-content: center;
-align-items: center;
 width: 100%;
 height: 100%;
-transition: opacity 0.3s ease;
+box-sizing: border-box;
+transition: opacity 0.2s ease;
 }
 
-.hidden {
-display: none !important;
+.hidden { display: none !important; }
+
+/* ЭКРАН СТАРТОВОГО МЕНЮ */
+#menu-screen {
+justify-content: center;
+align-items: center;
+background: radial-gradient(circle at center, #0f1026 0%, #030308 100%);
 }
 
 .menu-box {
 text-align: center;
 background: var(--panel-bg);
-padding: 30px;
-border-radius: 24px;
-border: 1px solid rgba(57, 255, 20, 0.2);
-box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
-width: 380px;
-box-sizing: border-box;
+padding: 40px;
+border-radius: 28px;
+border: 1px solid rgba(57, 255, 20, 0.25);
+box-shadow: 0 0 50px rgba(57, 255, 20, 0.15);
+width: 420px;
 }
 
 .menu-box h1 {
-font-size: 2.3rem;
+font-size: 2.6rem;
 color: var(--neon-green);
-text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
-margin: 0 0 15px 0;
+text-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
+margin: 0 0 10px 0;
 letter-spacing: 2px;
 }
 
-.crypto-ticker {
-background: rgba(0, 0, 0, 0.4);
-border-radius: 12px;
-padding: 12px;
-margin-bottom: 15px;
-border: 1px solid rgba(0, 243, 255, 0.1);
-}
-
-.ticker-label {
-font-size: 0.75rem;
+/* Выбор языка */
+.lang-title {
+font-size: 0.9rem;
 color: #8080af;
+margin-bottom: 10px;
 text-transform: uppercase;
-letter-spacing: 1px;
-margin-bottom: 4px;
 }
-
-.ticker-rate {
-font-size: 1.3rem;
-font-weight: bold;
-color: #fff;
-transition: color 0.3s ease;
-}
-
-.rate-up { color: var(--neon-green) !important; text-shadow: 0 0 8px rgba(57, 255, 20, 0.4); }
-.rate-down { color: var(--neon-pink) !important; text-shadow: 0 0 8px rgba(255, 0, 85, 0.4); }
-
-/* БЛОК СЕТКИ И ГРАФИКА */
-.chart-container {
-position: relative;
-background: #06060c;
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 12px;
-margin-bottom: 20px;
-height: 110px;
-overflow: hidden;
-box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
-}
-
-.chart-canvas {
-display: block;
-width: 100%;
-height: 100%;
-}
-
-.menu-stats {
+.lang-zone {
 display: flex;
 justify-content: space-between;
-background: rgba(255, 255, 255, 0.02);
+gap: 10px;
+margin-bottom: 25px;
+}
+.lang-btn {
+flex: 1;
+background: rgba(255,255,255,0.03);
+border: 1px solid rgba(255,255,255,0.1);
+color: #fff;
 padding: 10px;
 border-radius: 12px;
-margin-bottom: 20px;
-font-size: 0.85rem;
-border: 1px solid rgba(255, 255, 255, 0.05);
-}
-.menu-stat-item { color: #a0a0cf; }
-.menu-stat-item span { color: var(--neon-cyan); font-weight: bold; }
-
-.menu-btn {
-background: transparent;
-border: 2px solid var(--neon-cyan);
-color: var(--neon-cyan);
-padding: 14px 0;
-width: 100%;
-font-size: 1.2rem;
-font-weight: bold;
-border-radius: 12px;
 cursor: pointer;
-text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
-box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
-transition: all 0.2s ease;
+font-weight: bold;
+font-size: 0.85rem;
+}
+.lang-btn:hover { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+.lang-btn.active {
+border-color: var(--neon-cyan);
+background: rgba(0, 243, 255, 0.1);
+color: var(--neon-cyan);
+box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
 }
 
-.menu-btn:hover {
-background: var(--neon-cyan);
-color: var(--bg-color);
-box-shadow: 0 0 25px var(--neon-cyan);
-}
-
-/* ИГРОВОЙ ЭКРАН */
-.game-wrapper {
-background: var(--panel-bg);
-padding: 25px;
-border-radius: 24px;
-box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
-border: 1px solid rgba(57, 255, 20, 0.2);
-width: 380px;
+/* ТРЁХПАНЕЛЬНЫЙ ИНТЕРФЕЙС */
+.game-layout {
+display: flex;
+width: 100%;
+height: 100%;
+padding: 20px;
+gap: 20px;
 box-sizing: border-box;
 }
 
-.stats-panel {
+.side-panel {
+flex: 1;
+background: var(--panel-bg);
+border: 1px solid var(--panel-border);
+border-radius: 24px;
+padding: 20px;
 display: flex;
-justify-content: space-between;
-margin-bottom: 15px;
+flex-direction: column;
+gap: 15px;
+box-sizing: border-box;
+overflow-y: auto;
 }
 
-.stat-box {
-background: rgba(255, 255, 255, 0.03);
-padding: 10px 15px;
-border-radius: 12px;
-border: 1px solid rgba(255, 255, 255, 0.05);
-width: 45%;
-text-align: center;
+.center-container { width: 400px; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
+
+.main-card {
+background: #0f0f22;
+border: 1px solid rgba(255,255,255,0.08);
+border-radius: 24px;
+padding: 20px;
+flex: 1;
+display: flex;
+flex-direction: column;
+position: relative;
+box-sizing: border-box;
 }
 
-.income-panel {
-background: rgba(0, 243, 255, 0.05);
-border: 1px solid rgba(0, 243, 255, 0.1);
-border-radius: 12px;
-padding: 10px;
-text-align: center;
-margin-bottom: 20px;
-font-size: 0.9rem;
-}
-
-.income-line { margin-bottom: 4px; }
-.income-line:last-child { margin-bottom: 0; }
-.income-value { color: var(--neon-cyan); font-weight: bold; text-shadow: 0 0 5px var(--neon-cyan); }
-
-.stat-label {
-font-size: 0.8rem;
-color: #8080af;
+.panel-header {
+font-size: 1.1rem;
+font-weight: bold;
+color: var(--neon-cyan);
 text-transform: uppercase;
 letter-spacing: 1px;
+border-bottom: 1px solid rgba(255,255,255,0.05);
+padding-bottom: 8px;
 }
 
-.stat-value {
-font-size: 1.5rem;
-font-weight: bold;
-color: var(--neon-green);
-text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
-}
-
-.click-zone {
-display: flex;
-justify-content: center;
-margin-bottom: 25px;
-position: relative;
-}
-
-.neon-core {
-width: 130px;
-height: 130px;
-border-radius: 50%;
-border: none;
-background: radial-gradient(circle, #fff 0%, var(--neon-green) 60%, #006400 100%);
-cursor: pointer;
-box-shadow: 0 0 35px var(--neon-green);
-transition: transform 0.05s ease;
-outline: none;
-animation: pulse 2s infinite ease-in-out;
-}
-
-@keyframes pulse {
-0% { box-shadow: 0 0 25px var(--neon-green); transform: scale(1); }
-50% { box-shadow: 0 0 45px var(--neon-green); transform: scale(1.03); }
-100% { box-shadow: 0 0 25px var(--neon-green); transform: scale(1); }
-}
-
-.neon-core:active {
-transform: scale(0.93) !important;
-box-shadow: 0 0 15px var(--neon-cyan);
-}
-
-.floating-number {
-position: absolute;
-color: var(--neon-green);
-font-weight: bold;
-font-size: 1.4rem;
-pointer-events: none;
-text-shadow: 0 0 8px var(--neon-green);
-animation: floatUp 0.6s ease-out forwards;
-z-index: 10;
-}
-
-.floating-number.crit {
-color: var(--neon-pink);
-font-size: 1.9rem;
-text-shadow: 0 0 12px var(--neon-pink);
-}
-
-@keyframes floatUp {
-0% { opacity: 1; transform: translateY(0px) scale(1); }
-100% { opacity: 0; transform: translateY(-70px) scale(0.7); }
-}
-
-.shop-panel h3 {
-margin: 0 0 15px 0;
-font-size: 1.1rem;
-color: #a0a0cf;
-text-align: center;
-}
-
-.shop-btn {
-width: 100%;
-background: rgba(255, 255, 255, 0.05);
-border: 1px solid rgba(255, 255, 255, 0.1);
+.list-item {
+background: rgba(0,0,0,0.3);
+border: 1px solid rgba(255,255,255,0.03);
+padding: 14px;
 border-radius: 12px;
-padding: 12px;
-color: #fff;
-cursor: pointer;
-margin-bottom: 12px;
-transition: all 0.2s ease;
-}
-
-.shop-btn:not(:disabled):hover {
-background: rgba(57, 255, 20, 0.1);
-border-color: var(--neon-green);
-box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
-}
-
-.shop-btn:disabled {
-opacity: 0.3;
-cursor: not-allowed;
-}
-
-.btn-info {
 display: flex;
 justify-content: space-between;
 align-items: center;
+font-size: 0.85rem;
+transition: all 0.5s ease;
 }
 
-.btn-title { font-weight: 600; }
-.btn-cost { color: var(--neon-green); font-size: 0.9rem; }
+.quest-done-style { border-color: rgba(57, 255, 20, 0.2); background: rgba(57, 255, 20, 0.02); }
+.quest-reward { color: var(--neon-green); font-weight: bold; margin-right: 8px; }
 
-.reset-link {
-display: block;
-margin: 15px auto 0;
-background: none;
-border: none;
-color: #505070;
-cursor: pointer;
-font-size: 0.8rem;
-text-decoration: underline;
+/* Красивая плавная галочка */
+.checkmark-icon {
+color: var(--neon-green);
+font-size: 1.3rem;
+font-weight: bold;
+opacity: 0;
+transform: scale(0.5);
+transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.reset-link:hover { color: var(--neon-pink); }
+.checkmark-icon.show { opacity: 1; transform: scale(1); }
+
+.staking-box {
+background: linear-gradient(135deg, rgba(176,38,255,0.05) 0%, rgba(0,243,255,0.05) 100%);
+border: 1px solid rgba(0,243,255,0.15);
+padding: 15px;
+border-radius: 16px;
+text-align: center;
+}
+
+/* Кнопки */
+button { font-family: inherit; transition: all 0.2s ease; }
+
+.green-btn {
+background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green);
+padding: 14px; width: 100%; font-size: 1.1rem; font-weight: bold; border-radius: 12px; cursor: pointer;
+}
+.green-btn:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 25px var(--neon-green); }
+
+.action-btn {
+background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;
+padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold;
+}
+.action-btn:hover:not(:disabled) { background: #fff; color: #000; }
+.action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.claim-btn {
+background: var(--neon-green); color: #000; border: none; padding: 6px 12px;
+border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem;
+}
+.claim-btn:hover { box-shadow: 0 0 12px var(--neon-green); }
+
+/* Кликер блоки */
+.stats-panel { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.stat-box {
+background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 12px; width: 48%;
+text-align: center; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box;
+}
+.stat-label { font-size: 0.75rem; color: #8080af; text-transform: uppercase; }
+.stat-value { font-size: 1.2rem; font-weight: bold; margin-top: 4px; }
+.text-usd { color: var(--neon-green); }
+.text-crypto { color: var(--neon-orange); }
+
+.income-panel {
+background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+border-radius: 12px; padding: 10px; text-align: center; margin-bottom: 12px; font-size: 0.85rem;
+}
+.income-value { font-weight: bold; color: var(--neon-cyan); }
+
+.chart-container { position: relative; background: #030307; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; margin-bottom: 12px; height: 100px; }
+.chart-canvas { display: block; width: 100%; height: 100%; }
+
+.trading-zone { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.trade-btn { width: 48%; padding: 10px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; color: #000; }
+.buy-btn { background: var(--neon-green); }
+.sell-btn { background: var(--neon-pink); }
+.trade-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.click-zone { text-align: center; margin-bottom: 12px; position: relative; }
+.neon-core {
+width: 90px; height: 90px; border-radius: 50%; border: none;
+background: radial-gradient(circle, #fff, var(--neon-cyan) 60%, #005577 100%);
+cursor: pointer; box-shadow: 0 0 25px var(--neon-cyan); transition: transform 0.05s;
+}
+.neon-core:active { transform: scale(0.92); }
+
+.tabs { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.tab-btn { background: transparent; border: none; color: #8080af; padding: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; width: 50%; }
+.tab-btn.active { color: var(--neon-cyan); border-bottom: 2px solid var(--neon-cyan); }
+
+.shop-btn { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 10px; color: #fff; cursor: pointer; margin-bottom: 6px; }
+.shop-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.btn-info { display: flex; justify-content: space-between; }
+.btn-cost { color: var(--neon-green); font-weight: bold; }
+
+.orange-btn { background: transparent; border: 2px solid var(--neon-orange); color: var(--neon-orange); padding: 12px 0; width: 100%; font-size: 1rem; font-weight: bold; border-radius: 12px; cursor: pointer; }
+.orange-btn:hover { background: var(--neon-orange); color: #000; box-shadow: 0 0 20px var(--neon-orange); }
+
+.floating-number { position: absolute; color: var(--neon-orange); font-weight: bold; font-size: 1.2rem; pointer-events: none; animation: floatUp 0.5s ease-out forwards; z-index: 100; }
+@keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
+
+/* ЭКРАН КОЛЕСА ФОРТУНЫ */
+#casino-screen { justify-content: center; align-items: center; background: radial-gradient(circle at center, #180c24 0%, #030308 100%); }
+.casino-container { background: var(--panel-bg); border-radius: 32px; padding: 30px; border: 1px solid rgba(255, 170, 0, 0.2); box-shadow: 0 0 50px rgba(255, 170, 0, 0.1); text-align: center; position: relative; width: 440px; box-sizing: border-box; }
+.back-btn { position: absolute; top: 25px; left: 25px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #8080af; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.back-btn:hover { color: #fff; border-color: #fff; }
+
+.wheel-wrapper { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+.wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--neon-orange); z-index: 10; filter: drop-shadow(0 0 5px var(--neon-orange)); }
+#wheel-canvas { border-radius: 50%; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+.wheel-center-pin { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 55px; height: 55px; background: #0b0b16; border: 3px solid #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.75rem; font-weight: bold; color: #fff; }
+.casino-result { font-size: 1.1rem; font-weight: bold; color: var(--neon-orange); margin: 15px 0; min-height: 24px; }
+
+/* ВСПЛЫВАЮЩИЕ ОКНА ДОСТИЖЕНИЙ (POP-UP) */
+.popup-overlay {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(3, 3, 8, 0.85); backdrop-filter: blur(8px);
+display: flex; justify-content: center; align-items: center;
+z-index: 1000; opacity: 0; pointer-events: none;
+transition: opacity 0.3s ease;
+}
+.popup-overlay.active { opacity: 1; pointer-events: auto; }
+.popup-card {
+background: #0f0f24; border: 2px solid var(--neon-orange);
+box-shadow: 0 0 40px rgba(255, 170, 0, 0.3);
+border-radius: 28px; padding: 35px; text-align: center;
+width: 380px; transform: scale(0.7); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.popup-overlay.active .popup-card { transform: scale(1); }
+.popup-icon-frame {
+font-size: 3.5rem; margin-bottom: 15px;
+filter: drop-shadow(0 0 15px var(--neon-orange));
+animation: pulseIcon 2s infinite alternate;
+}
+@keyframes pulseIcon { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+.popup-title { font-size: 1.6rem; font-weight: bold; color: #fff; margin-bottom: 8px; }
+.popup-desc { font-size: 0.95rem; color: #aaabc2; margin-bottom: 20px; }
 </style>
 </head>
 <body>
 
-<!-- MENU SCREEN -->
+<!-- ВСПЛЫВАЮЩЕЕ ОКНО ДОСТИЖЕНИЙ -->
+<div id="achievement-popup" class="popup-overlay">
+<div class="popup-card">
+<div id="pop-icon" class="popup-icon-frame">🏆</div>
+<div id="pop-title" class="popup-title">Достижение!</div>
+<div id="pop-desc" class="popup-desc">Описание успеха</div>
+<button id="pop-close-btn" class="green-btn" style="border-color: var(--neon-orange); color: var(--neon-orange);">Excellent</button>
+</div>
+</div>
+
+<!-- СТАРТОВОЕ МЕНЮ С ВЫБОРОМ ЯЗЫКА -->
 <div id="menu-screen" class="screen">
 <div class="menu-box">
 <h1>CYBER CLICKER</h1>
 
-<div class="crypto-ticker">
-<div class="ticker-label">Live Clickercoin Rate</div>
-<div id="menu-rate-display" class="ticker-rate">1 CLK = $1.25</div>
+<div class="lang-title">Choose Language / Выберите язык</div>
+<div class="lang-zone">
+<button class="lang-btn" data-lang="en">EN</button>
+<button class="lang-btn active" data-lang="ru">RU</button>
+<button class="lang-btn" data-lang="am">ՀԱՅ</button>
 </div>
 
-<!-- Координатная сетка графика (Меню) -->
+<div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; margin-bottom: 20px;">
+<div id="lbl-menu-rate" style="font-size: 0.8rem; color:#8080af;">ТЕКУЩИЙ КУРС CLK</div>
+<div id="menu-rate" style="font-size: 1.5rem; font-weight:bold;" class="text-usd">$1.25</div>
+</div>
 <div class="chart-container">
-<canvas id="menu-chart" class="chart-canvas" width="320" height="110"></canvas>
+<canvas id="menu-chart" class="chart-canvas" width="340" height="100"></canvas>
 </div>
-
-<div class="menu-stats">
-<div class="menu-stat-item">Balance: <span id="menu-score">$0.00</span></div>
-<div class="menu-stat-item">Multiplier: <span id="menu-power">x1</span></div>
-</div>
-
-<button id="start-game-btn" class="menu-btn">START GAME</button>
+<button id="start-game-btn" class="green-btn">ENTER THE MATRIX</button>
 </div>
 </div>
 
-<!-- GAME SCREEN -->
+<!-- ОСНОВНОЙ ИГРОВОЙ ЭКРАН -->
 <div id="game-screen" class="screen hidden">
-<div class="game-wrapper">
+<div class="game-layout">
+
+<!-- ЛЕВАЯ ПАНЕЛЬ: КВЕСТЫ -->
+<div class="side-panel">
+<div id="hdr-quests" class="panel-header">Задания Системы</div>
+
+<!-- Квест 1 -->
+<div id="quest-click" class="list-item">
+<div>
+<div id="q1-title" style="font-weight: bold;">Нажать на Ядро 50 раз</div>
+<div id="quest-click-progress" style="color: #8080af; font-size: 0.75rem;">Прогресс: 0/50</div>
+</div>
+<div id="quest-click-action" style="display: flex; align-items: center;">
+<span class="quest-reward">+$25</span>
+</div>
+</div>
+
+<!-- Квест 2 -->
+<div id="quest-buy" class="list-item">
+<div>
+<div id="q2-title" style="font-weight: bold;">Купить 10 монет CLK</div>
+<div id="quest-buy-status" style="color: #8080af; font-size: 0.75rem;">Статус: В процессе</div>
+</div>
+<div id="quest-buy-action" style="display: flex; align-items: center;">
+<span class="quest-reward">+$40</span>
+</div>
+</div>
+</div>
+
+<!-- ЦЕНТРАЛЬНАЯ ПАНЕЛЬ: НАШ КЛИКЕР -->
+<div class="center-container">
+<div class="main-card">
 <div class="stats-panel">
 <div class="stat-box">
-<span class="stat-label">Balance</span>
-<div class="stat-value" id="score">$0.00</div>
+<span id="lbl-balance" class="stat-label">Баланс (USD)</span>
+<div id="score" class="stat-value text-usd">$0.00</div>
 </div>
 <div class="stat-box">
-<span class="stat-label">Power</span>
-<div class="stat-value" id="click-power">x1</div>
+<span id="lbl-assets" class="stat-label">Крипто-активы</span>
+<div id="crypto-balance" class="stat-value text-crypto">0.00 CLK</div>
 </div>
 </div>
 
 <div class="income-panel">
-<div class="income-line">Bot Passive: <span id="income-rate" class="income-value">$0.00</span> / sec</div>
-<div class="income-line">Market Rate: <span id="game-rate-display" class="income-value" style="color:#fff;">$1.25</span></div>
+<div><span id="lbl-passive">Пассивный доход</span>: <span id="mining-rate" class="income-value">0.0 CLK</span> / <span id="lbl-sec">сек</span></div>
+<div><span id="lbl-coin-rate">Курс монеты (CLK)</span>: <span id="game-rate-display" style="color:#fff; font-weight:bold;">$1.25</span></div>
 </div>
 
-<!-- Координатная сетка графика (Прямо внутри игры) -->
 <div class="chart-container">
-<canvas id="game-chart" class="chart-canvas" width="330" height="110"></canvas>
+<canvas id="game-chart" class="chart-canvas" width="360" height="100"></canvas>
+</div>
+
+<div class="trading-zone">
+<button id="btn-buy-crypto" class="trade-btn buy-btn">Купить 10 CLK</button>
+<button id="btn-sell-crypto" class="trade-btn sell-btn">Продать всё</button>
 </div>
 
 <div class="click-zone">
 <button id="target-core" class="neon-core"></button>
+<div style="font-size: 0.8rem; color:#8080af; margin-top:5px;"><span id="lbl-power">Сила клика</span>: <span id="click-power" style="color:var(--neon-cyan)">x1</span></div>
 </div>
 
-<div class="shop-panel">
-<h3>Upgrades (USD)</h3>
+<div class="tabs">
+<button id="tab-upgrades" class="tab-btn active">Улучшения</button>
+<button id="tab-invest" class="tab-btn">DeFi Краткосрок</button>
+</div>
 
+<div id="upgrades-content" class="tab-content">
 <button id="buy-click" class="shop-btn" disabled>
-<div class="btn-info">
-<span class="btn-title">Upgrade Click (+1)</span>
-<span class="btn-cost"><span id="click-cost">$15.00</span></span>
-</div>
+<div class="btn-info"><span id="lbl-up-click">⚡ Модернизация клика (+1)</span><span class="btn-cost" id="click-cost">$15</span></div>
 </button>
-
 <button id="buy-bot" class="shop-btn" disabled>
-<div class="btn-info">
-<span class="btn-title">Buy Auto-Bot (+1/s)</span>
-<span class="btn-cost"><span id="bot-cost">$50.00</span></span>
-</div>
+<div class="btn-info"><span id="lbl-up-bot">⚙️ Автокликер (+0.2 CLK/сек)</span><span class="btn-cost" id="bot-cost">$50</span></div>
 </button>
-
-<button id="reset-btn" class="reset-link">Reset Progress</button>
-</div>
-</div>
 </div>
 
-<!-- JAVASCRIPT LOGIC -->
+<div id="invest-content" class="tab-content hidden">
+<div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius:12px; text-align:center; font-size:0.8rem;">
+<div id="lbl-inv-title" style="font-weight:bold; color:var(--neon-purple)">Контракт на 15 секунд</div>
+<div id="lbl-inv-desc" style="color:#8080af; font-size:0.75rem; margin: 4px 0;">Инвестиция $50. Если курс вырастет — удвоение, если упадет — потеря.</div>
+<button id="btn-invest-order" class="action-btn" style="width:100%; margin-top:8px; border-color:var(--neon-purple); color:var(--neon-purple); background:transparent;">Открыть ордер ($50)</button>
+<div id="invest-status" style="margin-top:5px; color:#8080af;">Нет активных контрактов</div>
+</div>
+</div>
+
+<button id="go-to-casino-btn" class="orange-btn" style="margin-top:auto;">Открыть Колесо Фортуны 🎲</button>
+</div>
+</div>
+
+<!-- ПРАВАЯ ПАНЕЛЬ: СТЕЙКИНГ -->
+<div class="side-panel">
+<div id="hdr-staking" class="panel-header">DeFi Стейкинг Пул</div>
+<div class="staking-box">
+<div id="lbl-staked-title" style="font-size:0.8rem; color:#8080af;">Заморожено средств</div>
+<div id="staked-amount" style="font-size:1.4rem; font-weight:bold; color:var(--neon-cyan); margin: 5px 0;">$0.00</div>
+<div id="lbl-staked-desc" style="font-size:0.75rem; color:var(--neon-green); margin-bottom:10px;">Приносит +5% каждые 10 сек</div>
+<div style="display:flex; gap:10px;">
+<button id="btn-stake-deposit" class="action-btn" style="flex:1;">Вложить $50</button>
+<button id="btn-stake-withdraw" class="action-btn" style="flex:1;">Забрать всё</button>
+</div>
+</div>
+
+<div id="hdr-ach" class="panel-header" style="margin-top:10px;">Достижения</div>
+<div id="ach-1" class="list-item" style="opacity: 0.4;">
+<div>
+<div id="ach1-title" style="font-weight:bold;">Первая тысяча</div>
+<div id="ach1-desc" style="font-size:0.75rem; color:#8080af;">Достигнуть баланса $1,000</div>
+</div>
+🏆
+</div>
+<div id="ach-2" class="list-item" style="opacity: 0.4;">
+<div>
+<div id="ach2-title" style="font-weight:bold;">Статус Кита</div>
+<div id="ach2-desc" style="font-size:0.75rem; color:#8080af;">Держать более 100 CLK</div>
+</div>
+🐳
+</div>
+<button id="reset-btn" style="background:none; border:none; color:#444; text-decoration:underline; cursor:pointer; font-size:0.75rem; margin-top:auto;">Сбросить Базу Данных</button>
+</div>
+
+</div>
+</div>
+
+<!-- ЭКРАН КОЛЕСА ФОРТУНЫ -->
+<div id="casino-screen" class="screen hidden">
+<div class="casino-container">
+<button id="back-to-game-btn" class="back-btn">← Назад</button>
+<div style="font-size: 1.5rem; font-weight:bold; color:var(--neon-orange); letter-spacing:1px; margin-top:20px;">WHEEL OF FORTUNE</div>
+
+<div class="wheel-wrapper">
+<div class="wheel-pointer"></div>
+<canvas id="wheel-canvas" width="280" height="280"></canvas>
+<div class="wheel-center-pin">CORE</div>
+</div>
+
+<div id="casino-result" class="casino-result">Испытай свою удачу!</div>
+<button id="btn-spin" class="orange-btn">Вращать Колесо ($30)</button>
+</div>
+</div>
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-let gameState = JSON.parse(localStorage.getItem('clicker_save')) || {
-score: 0.00,
-clickPower: 1,
-botClicks: 0,
-clickCost: 15,
-botCost: 50
+// СИНТЕЗАТОР ЗВУКА ПОБЕДЫ (Audio API без внешних файлов)
+function playWinSound() {
+try {
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const notes = [261.63, 329.63, 392.00, 523.25]; // Аккорд до-мажор
+notes.forEach((freq, index) => {
+let osc = ctx.createOscillator();
+let gain = ctx.createGain();
+osc.type = 'triangle';
+osc.frequency.value = freq;
+gain.gain.setValueAtTime(0.15, ctx.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6 + index * 0.1);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(ctx.currentTime + index * 0.08);
+osc.stop(ctx.currentTime + 0.6 + index * 0.1);
+});
+} catch(e) {}
+}
+
+// КНИГА СЛОВАРЕЙ ЛОКАЛИЗАЦИИ
+const langPack = {
+ru: {
+menuRate: "ТЕКУЩИЙ КУРС CLK", enter: "ВОЙТИ В МАТРИЦУ", quests: "Задания Системы",
+q1: "Нажать на Ядро 50 раз", q2: "Купить 10 монет CLK", progress: "Прогресс", statusProc: "Статус: В процессе",
+statusDone: "Статус: Выполнено", claim: "ЗАБРАТЬ", claimed: "Получено", balance: "Баланс (USD)",
+assets: "Крипто-активы", passive: "Пассивный доход", sec: "сек", rate: "Курс монеты (CLK)",
+buyCLK: "Купить 10 CLK", sellAll: "Продать всё", power: "Сила клика", upgrades: "Улучшения",
+defishort: "DeFi Краткосрок", upClick: "⚡ Модернизация клика (+1)", upBot: "⚙️ Автокликер (+0.2 CLK/сек)",
+contractTitle: "Контракт на 15 секунд", contractDesc: "Инвестиция $50. Если курс вырастет — удвоение, если упадет — потеря.",
+openOrder: "Открыть ордер ($50)", noContract: "Нет активных контрактов", wheelTitle: "Открыть Колесо Фортуны 🎲",
+stTitle: "DeFi Стейкинг Пул", stFr: "Заморожено средств", stDesc: "Приносит +5% каждые 10 сек", stDep: "Вложить $50",
+stWith: "Забрать всё", achTitle: "Достижения", ach1T: "Первая тысяча", ach1D: "Достигнуть баланса $1,000",
+ach2T: "Статус Кита", ach2D: "Держать более 100 CLK", wipe: "Сбросить Базу Данных", back: "← Назад",
+spin: "Вращать Колесо ($30)", luck: "Испытай свою удачу!", rolling: "Колесо раскручивается...", dropped: "Выпало",
+conProfit: "📈 ПРОФИТ! +$100.00", conLoss: "📉 УБЫТОК! -$50.00", conStable: "⚖️ КУРС СТАБИЛЕН! $50 возвращены.",
+lockText: "⏱️ Залочено на", popCong: "ПОЗДРАВЛЯЕМ!", popGreat: "Отлично"
+},
+en: {
+menuRate: "CURRENT CLK RATE", enter: "ENTER THE MATRIX", quests: "System Tasks",
+q1: "Tap Core 50 times", q2: "Buy 10 CLK coins", progress: "Progress", statusProc: "Status: In progress",
+statusDone: "Status: Completed", claim: "CLAIM", claimed: "Claimed", balance: "Balance (USD)",
+assets: "Crypto Assets", passive: "Passive Yield", sec: "sec", rate: "Coin Rate (CLK)",
+buyCLK: "Buy 10 CLK", sellAll: "Sell All", power: "Click Power", upgrades: "Upgrades",
+defishort: "DeFi Short", upClick: "⚡ Optimize Click (+1)", upBot: "⚙️ Autoclicker (+0.2 CLK/sec)",
+contractTitle: "15-Second Contract", contractDesc: "Investment of $50. If the price goes up - double, if it falls - loss.",
+openOrder: "Open Order ($50)", noContract: "No active contracts", wheelTitle: "Open Fortune Wheel 🎲",
+stTitle: "DeFi Staking Pool", stFr: "Staked Funds", stDesc: "Generates +5% every 10 sec", stDep: "Deposit $50",
+stWith: "Claim All", achTitle: "Achievements", ach1T: "First Thousand", ach1D: "Reach $1,000 balance",
+ach2T: "Whale Status", ach2D: "Hold more than 100 CLK", wipe: "Wipe Database", back: "← Back",
+spin: "Spin Wheel ($30)", luck: "Test your luck!", rolling: "System cycling...", dropped: "Dropped",
+conProfit: "📈 PROFIT! +$100.00", conLoss: "📉 LOSS! -$50.00", conStable: "⚖️ STABLE! $50 returned.",
+lockText: "⏱️ Locked at", popCong: "CONGRATULATIONS!", popGreat: "Excellent"
+},
+am: {
+menuRate: "CLK ԸՆԹԱՑԻԿ ՓՈԽԱՐԺԵՔ", enter: "ՄՈՒՏՔ ԳՈՐԾԵԼ ՄԱՏՐԻՑԱ", quests: "Համակարգի Առաջադրանքներ",
+q1: "Սեղմել Միջուկին 50 անգամ", q2: "Գնել 10 CLK մետաղադրամ", progress: "Առաջընթաց", statusProc: "Կարգավիճակ: Ընթացքի մեջ",
+statusDone: "Կարգավիճակ: Կատարված է", claim: "ՍՏԱՆԱԼ", claimed: "Ստացված է", balance: "Հաշվեկշիռ (USD)",
+assets: "Կրիպտո Ակտիվներ", passive: "Պասիվ Եկամուտ", sec: "վրկ", rate: "Մետաղադրամի Կուրսը (CLK)",
+buyCLK: "Գնել 10 CLK", sellAll: "Վաճառել Ամբողջը", power: "Սեղմման Ուժը", upgrades: "Բարելավումներ",
+defishort: "DeFi Կարճաժամկետ", upClick: "⚡ Սեղմման Մոդեռնիզացիա (+1)", upBot: "⚙️ Ավտոսեղմիչ (+0.2 CLK/վրկ)",
+contractTitle: "15-Վայրկյանոց Պայմանագիր", contractDesc: "Ներդրում $50: Եթե փոխարժեքը բարձրանա՝ կրկնապատկում, եթե ընկնի՝ կորուստ:",
+openOrder: "Բացել Օրդեր ($50)", noContract: "Ակտիվ պայմանագրեր չկան", wheelTitle: "Բացել Հաջողության Անիվը 🎲",
+stTitle: "DeFi Սթեյքինգ Պուլ", stFr: "Սառեցված Միջոցներ", stDesc: "Բերում է +5% յուրաքանչյուր 10 վրկ", stDep: "Ներդնել $50",
+stWith: "Վերցնել Ամբողջը", achTitle: "Նվաճումներ", ach1T: "Առաջին Հազարը", ach1D: "Հասնել $1,000 հաշվեկշռի",
+ach2T: "Կետի Կարգավիճակ", ach2D: "Ունենալ ավելի քան 100 CLK", wipe: "Ջնջել Տվյալների Բազան", back: "← Ետ",
+spin: "Պտտել Անիվը ($30)", luck: "Փորձիր քո բախտը:", rolling: "Անիվը պտտվում է...", dropped: "Դուրս եկավ",
+conProfit: "📈 ՇԱՀՈՒՅԹ! +$100.00", conLoss: "📉 ԿՈՐՈՒՍՏ! -$50.00", conStable: "⚖️ ԿՈՒՐՍԸ ԿԱՅՈՒՆ Է! $50 վերադարձված է:",
+lockText: "⏱️ Ֆիքսված է", popCong: "ՇՆՈՐՀԱՎՈՐԱՆՔՆԵՐ", popGreat: "Գերազանց"
+}
 };
 
-let currentCoinRate = 1.25;
-let priceHistory = [1.15, 1.25, 1.20, 1.35, 1.25, 1.30, 1.45, 1.25];
-const maxHistoryLength = 14;
+document.addEventListener('DOMContentLoaded', () => {
+let selectedLang = 'ru';
 
-const menuScreen = document.getElementById('menu-screen');
-const gameScreen = document.getElementById('game-screen');
-const startGameBtn = document.getElementById('start-game-btn');
+let state = JSON.parse(localStorage.getItem('cyber_universe_save_v3')) || {
+score: 0.00, crypto: 0.00, clickPower: 1, botClicks: 0,
+clickCost: 15, botCost: 50, staked: 0,
+qClickProgress: 0, qClickDone: false, qClickClaimed: false,
+qBuyDone: false, qBuyClaimed: false,
+ach1: false, ach2: false
+};
 
-const scoreEl = document.getElementById('score');
-const clickPowerEl = document.getElementById('click-power');
-const incomeRateEl = document.getElementById('income-rate');
-const clickCostEl = document.getElementById('click-cost');
-const botCostEl = document.getElementById('bot-cost');
-const targetCore = document.getElementById('target-core');
-const buyClickBtn = document.getElementById('buy-click');
-const buyBotBtn = document.getElementById('buy-bot');
-const resetBtn = document.getElementById('reset-btn');
+let currentRate = 1.25;
+let rateHistory = [1.10, 1.20, 1.15, 1.30, 1.25, 1.20, 1.35, 1.25];
+const maxHistory = 14;
 
-const menuScoreEl = document.getElementById('menu-score');
-const menuPowerEl = document.getElementById('menu-power');
-const menuRateDisplay = document.getElementById('menu-rate-display');
-const gameRateDisplay = document.getElementById('game-rate-display');
+const menuScreen = document.getElementById('menu-screen'),
+gameScreen = document.getElementById('game-screen'),
+casinoScreen = document.getElementById('casino-screen'),
+menuCanvas = document.getElementById('menu-chart'),
+gameCanvas = document.getElementById('game-chart');
 
-const menuCanvas = document.getElementById('menu-chart');
-const gameCanvas = document.getElementById('game-chart');
+const scoreEl = document.getElementById('score'), cryptoEl = document.getElementById('crypto-balance'),
+clickPowerEl = document.getElementById('click-power'), miningRateEl = document.getElementById('mining-rate'),
+clickCostEl = document.getElementById('click-cost'), botCostEl = document.getElementById('bot-cost'),
+stakedAmountEl = document.getElementById('staked-amount');
 
-function calculateEarnings(basePower) {
-return +(basePower * currentCoinRate).toFixed(2);
+const btnInvestOrder = document.getElementById('btn-invest-order');
+const investStatus = document.getElementById('invest-status');
+let orderActive = false;
+let orderStartRate = 0;
+
+// Колесо Фортуны - СВЕТЯЩИЕСЯ НЕОНОВЫЕ СЕКТОРА
+const wheelCanvas = document.getElementById('wheel-canvas');
+const wheelCtx = wheelCanvas.getContext('2d');
+const sectors = [
+{ label: "+$250 USD", color: "#b026ff", reward: () => { state.score += 250; } },
+{ label: "+5 Click", color: "#39ff14", reward: () => { state.clickPower += 5; } },
+{ label: "+$10 USD", color: "#00f3ff", reward: () => { state.score += 10; } },
+{ label: "Empty", color: "#ff0055", reward: () => {} },
+{ label: "+50 CLK", color: "#ffaa00", reward: () => { state.crypto += 50; } },
+{ label: "+2 Auto", color: "#00f3ff", reward: () => { state.botClicks += 2; } }
+];
+
+let numSectors = sectors.length;
+let arc = Math.PI * 2 / numSectors;
+let startAngle = 0;
+let isSpinning = false;
+let spinAngleStart = 0;
+let spinTime = 0;
+let spinTimeTotal = 0;
+
+function drawWheel() {
+wheelCtx.clearRect(0,0,280,280);
+let cx = 140, cy = 140, r = 135;
+
+wheelCtx.fillStyle = "#0f0f22";
+wheelCtx.beginPath(); wheelCtx.arc(cx, cy, r, 0, Math.PI*2); wheelCtx.fill();
+
+for(let i = 0; i < numSectors; i++) {
+let angle = startAngle + i * arc;
+
+// Эффект неонового свечения секторов
+wheelCtx.save();
+wheelCtx.shadowBlur = 10;
+wheelCtx.shadowColor = sectors[i].color;
+wheelCtx.fillStyle = sectors[i].color;
+wheelCtx.beginPath();
+wheelCtx.arc(cx, cy, r - 6, angle, angle + arc);
+wheelCtx.lineTo(cx, cy);
+wheelCtx.fill();
+wheelCtx.restore();
+
+// Текст
+wheelCtx.save();
+wheelCtx.fillStyle = "#000";
+wheelCtx.font = "bold 11px sans-serif";
+wheelCtx.translate(cx + Math.cos(angle + arc/2) * (r - 50), cy + Math.sin(angle + arc/2) * (r - 50));
+wheelCtx.rotate(angle + arc/2 + Math.PI/2);
+wheelCtx.fillText(sectors[i].label, -wheelCtx.measureText(sectors[i].label).width / 2, 0);
+wheelCtx.restore();
+}
 }
 
-// Рендеринг сетки координат и кривой тренда курса
+// ПЕРЕКЛЮЧЕНИЕ ЯЗЫКОВ
+document.querySelectorAll('.lang-btn').forEach(btn => {
+btn.addEventListener('click', (e) => {
+document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+e.target.classList.add('active');
+selectedLang = e.target.getAttribute('data-lang');
+applyLocalization();
+});
+});
+
+function applyLocalization() {
+const l = langPack[selectedLang];
+document.getElementById('lbl-menu-rate').textContent = l.menuRate;
+document.getElementById('start-game-btn').textContent = l.enter;
+document.getElementById('hdr-quests').textContent = l.quests;
+document.getElementById('q1-title').textContent = l.q1;
+document.getElementById('q2-title').textContent = l.q2;
+document.getElementById('lbl-balance').textContent = l.balance;
+document.getElementById('lbl-assets').textContent = l.assets;
+document.getElementById('lbl-passive').textContent = l.passive;
+document.getElementById('lbl-sec').textContent = l.sec;
+document.getElementById('lbl-coin-rate').textContent = l.rate;
+document.getElementById('btn-buy-crypto').textContent = l.buyCLK;
+document.getElementById('btn-sell-crypto').textContent = l.sellAll;
+document.getElementById('lbl-power').textContent = l.power;
+document.getElementById('tab-upgrades').textContent = l.upgrades;
+document.getElementById('tab-invest').textContent = l.defishort;
+document.getElementById('lbl-up-click').textContent = l.upClick;
+document.getElementById('lbl-up-bot').textContent = l.upBot;
+document.getElementById('lbl-inv-title').textContent = l.contractTitle;
+document.getElementById('lbl-inv-desc').textContent = l.contractDesc;
+document.getElementById('btn-invest-order').textContent = l.openOrder;
+if(!orderActive) investStatus.textContent = l.noContract;
+document.getElementById('go-to-casino-btn').textContent = l.wheelTitle;
+document.getElementById('hdr-staking').textContent = l.stTitle;
+document.getElementById('lbl-staked-title').textContent = l.stFr;
+document.getElementById('lbl-staked-desc').textContent = l.stDesc;
+document.getElementById('btn-stake-deposit').textContent = l.stDep;
+document.getElementById('btn-stake-withdraw').textContent = l.stWith;
+document.getElementById('hdr-ach').textContent = l.achTitle;
+document.getElementById('ach1-title').textContent = l.ach1T;
+document.getElementById('ach1-desc').textContent = l.ach1D;
+document.getElementById('ach2-title').textContent = l.ach2T;
+document.getElementById('ach2-desc').textContent = l.ach2D;
+document.getElementById('reset-btn').textContent = l.wipe;
+document.getElementById('back-to-game-btn').textContent = l.back;
+document.getElementById('btn-spin').textContent = l.spin;
+if(!isSpinning) document.getElementById('casino-result').textContent = l.luck;
+}
+
+// ПОКАЗ КРУТОГО ОКНА ДОСТИЖЕНИЙ (POP-UP + ЗВУК)
+function showAchievementPopup(icon, title, desc) {
+const l = langPack[selectedLang];
+playWinSound();
+document.getElementById('pop-icon').textContent = icon;
+document.getElementById('pop-title').textContent = title;
+document.getElementById('pop-desc').textContent = desc;
+document.getElementById('pop-close-btn').textContent = l.popGreat;
+
+const pop = document.getElementById('achievement-popup');
+pop.classList.add('active');
+}
+
+document.getElementById('pop-close-btn').addEventListener('click', () => {
+document.getElementById('achievement-popup').classList.remove('active');
+});
+
+// Навигация
+document.getElementById('start-game-btn').addEventListener('click', () => {
+menuScreen.classList.add('hidden');
+gameScreen.classList.remove('hidden');
+setTimeout(() => { drawChart(gameCanvas); }, 50);
+});
+
+document.getElementById('go-to-casino-btn').addEventListener('click', () => {
+gameScreen.classList.add('hidden');
+casinoScreen.classList.remove('hidden');
+drawWheel();
+});
+
+document.getElementById('back-to-game-btn').addEventListener('click', () => {
+if (isSpinning) return;
+casinoScreen.classList.add('hidden');
+gameScreen.classList.remove('hidden');
+setTimeout(() => { drawChart(gameCanvas); }, 50);
+});
+
 function drawChart(canvas) {
 if (!canvas) return;
-const ctx = canvas.getContext('2d');
-const w = canvas.width;
-const h = canvas.height;
-
+const ctx = canvas.getContext('2d'), w = canvas.width, h = canvas.height;
 ctx.clearRect(0, 0, w, h);
+ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+for (let y = 15; y < h; y += 20) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
 
-// 1. Рисуем координатную сетку линий
-ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-ctx.lineWidth = 1;
+if (rateHistory.length < 2) return;
+const min = Math.min(...rateHistory) * 0.95, max = Math.max(...rateHistory) * 1.05, range = max - min;
 
-// Горизонтальные уровни
-for (let y = 15; y < h; y += 20) {
-ctx.beginPath();
-ctx.moveTo(0, y);
-ctx.lineTo(w, y);
-ctx.stroke();
-}
-// Вертикальные временные отсечки
-for (let x = 25; x < w; x += 35) {
-ctx.beginPath();
-ctx.moveTo(x, 0);
-ctx.lineTo(x, h);
-ctx.stroke();
-}
+ctx.beginPath(); ctx.lineWidth = 2;
+ctx.strokeStyle = rateHistory[rateHistory.length - 1] >= rateHistory[rateHistory.length - 2] ? '#39ff14' : '#ff0055';
 
-if (priceHistory.length < 2) return;
-
-const min = Math.min(...priceHistory) * 0.92;
-const max = Math.max(...priceHistory) * 1.08;
-const range = max - min;
-
-// 2. Отрисовка трендовой линии
-ctx.beginPath();
-ctx.lineWidth = 2.5;
-
-const isUp = priceHistory[priceHistory.length - 1] >= priceHistory[priceHistory.length - 2];
-ctx.strokeStyle = isUp ? '#39ff14' : '#ff0055';
-
-for (let i = 0; i < priceHistory.length; i++) {
-const x = (i / (maxHistoryLength - 1)) * w;
-const y = h - ((priceHistory[i] - min) / range) * h;
-
-if (i === 0) ctx.moveTo(x, y);
-else ctx.lineTo(x, y);
+for (let i = 0; i < rateHistory.length; i++) {
+const x = (i / (maxHistory - 1)) * w;
+const y = h - ((rateHistory[i] - min) / range) * h;
+if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
 }
 ctx.stroke();
-
-// Заполнение пространства под кривой (неоновая подсветка)
-ctx.lineTo((priceHistory.length - 1) / (maxHistoryLength - 1) * w, h);
-ctx.lineTo(0, h);
-const gradient = ctx.createLinearGradient(0, 0, 0, h);
-gradient.addColorStop(0, isUp ? 'rgba(57, 255, 20, 0.15)' : 'rgba(255, 0, 85, 0.15)');
-gradient.addColorStop(1, 'transparent');
-ctx.fillStyle = gradient;
-ctx.fill();
 }
 
-function updateCoinRate() {
-const change = (Math.random() * 0.4 - 0.18);
-const oldRate = currentCoinRate;
-currentCoinRate = Math.max(0.1, +(currentCoinRate + change).toFixed(2));
-
-priceHistory.push(currentCoinRate);
-if (priceHistory.length > maxHistoryLength) {
-priceHistory.shift();
-}
+function tickMarket() {
+const volatility = (Math.random() * 0.4 - 0.18);
+currentRate = Math.max(0.2, +(currentRate + volatility).toFixed(2));
+rateHistory.push(currentRate);
+if (rateHistory.length > maxHistory) rateHistory.shift();
 
 drawChart(menuCanvas);
 drawChart(gameCanvas);
 
-const textContent = `1 CLK = $${currentCoinRate.toFixed(2)}`;
-menuRateDisplay.textContent = textContent;
-gameRateDisplay.textContent = `$${currentCoinRate.toFixed(2)}`;
-
-if (currentCoinRate >= oldRate) {
-menuRateDisplay.className = "ticker-rate rate-up";
-gameRateDisplay.style.color = "var(--neon-green)";
-} else {
-menuRateDisplay.className = "ticker-rate rate-down";
-gameRateDisplay.style.color = "var(--neon-pink)";
+document.getElementById('menu-rate').textContent = `$${currentRate.toFixed(2)}`;
+document.getElementById('game-rate-display').textContent = `$${currentRate.toFixed(2)}`;
+updateUI();
 }
+setInterval(tickMarket, 3000);
 
-if (!gameScreen.classList.contains('hidden')) {
-const currentPassive = calculateEarnings(gameState.botClicks);
-incomeRateEl.textContent = `$${currentPassive.toFixed(2)}`;
+setInterval(() => {
+if (state.staked > 0) {
+state.score += +(state.staked * 0.05).toFixed(2);
+updateUI(); save();
 }
+}, 10000);
+
+setInterval(() => {
+if (state.botClicks > 0) {
+state.crypto = +(state.crypto + (state.botClicks * 0.2)).toFixed(2);
+updateUI();
 }
+}, 1000);
 
-setInterval(updateCoinRate, 3000);
-updateCoinRate();
+function updateUI() {
+const l = langPack[selectedLang];
+scoreEl.textContent = `$${state.score.toFixed(2)}`;
+cryptoEl.textContent = `${state.crypto.toFixed(2)} CLK`;
+clickPowerEl.textContent = `x${state.clickPower}`;
+miningRateEl.textContent = `${(state.botClicks * 0.2).toFixed(1)} CLK`;
+clickCostEl.textContent = `$${state.clickCost}`;
+botCostEl.textContent = `$${state.botCost}`;
+stakedAmountEl.textContent = `$${state.staked.toFixed(2)}`;
 
-function initMenuStats() {
-menuScoreEl.textContent = `$${gameState.score.toFixed(2)}`;
-menuPowerEl.textContent = `x${gameState.clickPower}`;
-drawChart(menuCanvas);
-}
+document.getElementById('buy-click').disabled = state.score < state.clickCost;
+document.getElementById('buy-bot').disabled = state.score < state.botCost;
+document.getElementById('btn-buy-crypto').disabled = state.score < (currentRate * 10);
+document.getElementById('btn-sell-crypto').disabled = state.crypto <= 0;
+document.getElementById('btn-spin').disabled = state.score < 30 || isSpinning;
+document.getElementById('btn-stake-deposit').disabled = state.score < 50;
+document.getElementById('btn-stake-withdraw').disabled = state.staked <= 0;
+btnInvestOrder.disabled = state.score < 50 || orderActive;
 
-startGameBtn.addEventListener('click', () => {
-menuScreen.classList.add('hidden');
-gameScreen.classList.remove('hidden');
-updateInterface();
-setTimeout(() => drawChart(gameCanvas), 60);
+// ОБНОВЛЕНИЕ КВЕСТОВ И СБОР НАГРАД С ГАЛОЧКАМИ
+document.getElementById('quest-click-progress').textContent = `${l.progress}: ${state.qClickProgress}/50`;
+if (state.qClickProgress >= 50 && !state.qClickDone) {
+state.qClickDone = true;
+setupClaimButton('quest-click-action', () => {
+state.score += 25; state.qClickClaimed = true;
+animateCheckmark('quest-click', 'quest-click-action');
+updateUI(); save();
 });
-
-function saveGame() {
-localStorage.setItem('clicker_save', JSON.stringify(gameState));
+}
+if(state.qClickClaimed) {
+document.getElementById('quest-click').classList.add('quest-done-style');
+document.getElementById('quest-click-action').innerHTML = `<span class="checkmark-icon show">✓</span>`;
 }
 
-function updateInterface() {
-if (gameScreen.classList.contains('hidden')) return;
-
-scoreEl.textContent = `$${gameState.score.toFixed(2)}`;
-clickPowerEl.textContent = `x${gameState.clickPower}`;
-
-const currentPassive = calculateEarnings(gameState.botClicks);
-incomeRateEl.textContent = `$${currentPassive.toFixed(2)}`;
-
-clickCostEl.textContent = `$${gameState.clickCost}`;
-botCostEl.textContent = `$${gameState.botCost}`;
-
-buyClickBtn.disabled = gameState.score < gameState.clickCost;
-buyBotBtn.disabled = gameState.score < gameState.botCost;
+if (state.qBuyDone) {
+document.getElementById('quest-buy-status').textContent = l.statusDone;
+if(!state.qBuyClaimed && !document.getElementById('claim-buy-btn')) {
+setupClaimButton('quest-buy-action', () => {
+state.score += 40; state.qBuyClaimed = true;
+animateCheckmark('quest-buy', 'quest-buy-action');
+updateUI(); save();
+});
+}
+} else {
+document.getElementById('quest-buy-status').textContent = l.statusProc;
+}
+if(state.qBuyClaimed) {
+document.getElementById('quest-buy').classList.add('quest-done-style');
+document.getElementById('quest-buy-action').innerHTML = `<span class="checkmark-icon show">✓</span>`;
 }
 
-function createFloatingNumber(e, value, isCrit) {
-const rect = targetCore.getBoundingClientRect();
-const x = e ? e.clientX : rect.left + rect.width / 2;
-const y = e ? e.clientY : rect.top + rect.height / 2;
+// АЧИВКИ С ЦВЕТНЫМИ ПОП-АПАМИ
+if (state.score >= 1000 && !state.ach1) {
+state.ach1 = true;
+document.getElementById('ach-1').style.opacity = "1";
+showAchievementPopup("🏆", l.popCong, `${l.ach1T} (${l.ach1D})`);
+} else if (state.score >= 1000) {
+document.getElementById('ach-1').style.opacity = "1";
+}
+
+if (state.crypto >= 100 && !state.ach2) {
+state.ach2 = true;
+document.getElementById('ach-2').style.opacity = "1";
+showAchievementPopup("🐳", l.popCong, `${l.ach2T} (${l.ach2D})`);
+} else if (state.crypto >= 100) {
+document.getElementById('ach-2').style.opacity = "1";
+}
+}
+
+function setupClaimButton(containerId, callback) {
+const container = document.getElementById(containerId);
+container.innerHTML = '';
+const btn = document.createElement('button');
+btn.className = 'claim-btn';
+btn.id = containerId === 'quest-click-action' ? 'claim-click-btn' : 'claim-buy-btn';
+btn.textContent = langPack[selectedLang].claim;
+btn.addEventListener('click', callback);
+container.appendChild(btn);
+}
+
+// Плавное появление галочки
+function animateCheckmark(rowId, actionId) {
+const row = document.getElementById(rowId);
+const action = document.getElementById(actionId);
+row.classList.add('quest-done-style');
+action.innerHTML = `<span class="checkmark-icon">✓</span>`;
+setTimeout(() => {
+action.querySelector('.checkmark-icon').classList.add('show');
+}, 50);
+}
+
+// Ядро
+document.getElementById('target-core').addEventListener('click', (e) => {
+const mined = state.clickPower * 0.5;
+state.crypto = +(state.crypto + mined).toFixed(2);
+if (state.qClickProgress < 50) state.qClickProgress++;
 
 const num = document.createElement('div');
 num.className = 'floating-number';
-if (isCrit) num.classList.add('crit');
-num.textContent = isCrit ? `CRIT +$${value.toFixed(2)}` : `+$${value.toFixed(2)}`;
-num.style.left = `${x - 20}px`;
-num.style.top = `${y - 20}px`;
-
+num.textContent = `+${mined}`;
+num.style.left = `${e.clientX - 10}px`; num.style.top = `${e.clientY - 20}px`;
 document.body.appendChild(num);
 num.addEventListener('animationend', () => num.remove());
-}
 
-targetCore.addEventListener('click', (e) => {
-const isCrit = Math.random() < 0.10;
-let baseAmount = gameState.clickPower;
-let earnedDollars = calculateEarnings(baseAmount);
-
-if (isCrit) earnedDollars *= 3;
-
-gameState.score = +(gameState.score + earnedDollars).toFixed(2);
-createFloatingNumber(e, earnedDollars, isCrit);
-updateInterface();
-saveGame();
+updateUI(); save();
 });
 
-buyClickBtn.addEventListener('click', () => {
-if (gameState.score >= gameState.clickCost) {
-gameState.score = +(gameState.score - gameState.clickCost).toFixed(2);
-gameState.clickPower += 1;
-gameState.clickCost = Math.round(gameState.clickCost * 1.6);
-updateInterface();
-saveGame();
+document.getElementById('btn-buy-crypto').addEventListener('click', () => {
+const cost = +(currentRate * 10).toFixed(2);
+if (state.score >= cost) {
+state.score = +(state.score - cost).toFixed(2);
+state.crypto = +(state.crypto + 10).toFixed(2);
+state.qBuyDone = true;
+updateUI(); save();
 }
 });
 
-buyBotBtn.addEventListener('click', () => {
-if (gameState.score >= gameState.botCost) {
-gameState.score = +(gameState.score - gameState.botCost).toFixed(2);
-gameState.botClicks += 1;
-gameState.botCost = Math.round(gameState.botCost * 1.8);
-updateInterface();
-saveGame();
+document.getElementById('btn-sell-crypto').addEventListener('click', () => {
+if (state.crypto > 0) {
+state.score = +(state.score + (state.crypto * currentRate)).toFixed(2);
+state.crypto = 0;
+updateUI(); save();
 }
 });
 
-setInterval(() => {
-if (gameState.botClicks > 0) {
-const passivePerTick = calculateEarnings(gameState.botClicks) / 10;
-gameState.score = +(gameState.score + passivePerTick).toFixed(2);
-updateInterface();
-}
-}, 100);
+document.getElementById('btn-stake-deposit').addEventListener('click', () => {
+if (state.score >= 50) { state.score -= 50; state.staked += 50; updateUI(); save(); }
+});
+document.getElementById('btn-stake-withdraw').addEventListener('click', () => {
+if (state.staked > 0) { state.score += state.staked; state.staked = 0; updateUI(); save(); }
+});
 
-setInterval(saveGame, 3000);
-
-resetBtn.addEventListener('click', () => {
-if (confirm('Reset all progress?')) {
-localStorage.removeItem('clicker_save');
-location.reload();
+document.getElementById('buy-click').addEventListener('click', () => {
+if (state.score >= state.clickCost) {
+state.score -= state.clickCost; state.clickPower += 1;
+state.clickCost = Math.round(state.clickCost * 1.6); updateUI(); save();
 }
 });
 
-initMenuStats();
+document.getElementById('buy-bot').addEventListener('click', () => {
+if (state.score >= state.botCost) {
+state.score -= state.botCost; state.botClicks += 1;
+state.botCost = Math.round(state.botCost * 1.7); updateUI(); save();
+}
+});
+
+// Краткосрок ордера
+btnInvestOrder.addEventListener('click', () => {
+const l = langPack[selectedLang];
+if (state.score >= 50 && !orderActive) {
+state.score -= 50; orderActive = true;
+orderStartRate = currentRate; btnInvestOrder.disabled = true;
+
+let timeLeft = 15;
+investStatus.textContent = `${l.lockText} $${orderStartRate.toFixed(2)} (${timeLeft}s)`;
+
+const countdown = setInterval(() => {
+timeLeft--;
+if (timeLeft > 0) {
+investStatus.textContent = `${l.lockText} $${orderStartRate.toFixed(2)} (${timeLeft}s)`;
+} else {
+clearInterval(countdown); orderActive = false;
+if (currentRate > orderStartRate) {
+state.score += 100; investStatus.innerHTML = `<span style='color:var(--neon-green)'>${l.conProfit}</span>`;
+} else if (currentRate < orderStartRate) {
+investStatus.innerHTML = `<span style='color:var(--neon-pink)'>${l.conLoss}</span>`;
+} else {
+state.score += 50; investStatus.textContent = l.conStable;
+}
+updateUI(); save();
+}
+}, 1000);
+updateUI();
+}
+});
+
+// Колесо Фортуны Анимации
+document.getElementById('btn-spin').addEventListener('click', () => {
+if (state.score >= 30 && !isSpinning) {
+state.score -= 30; updateUI();
+document.getElementById('casino-result').textContent = langPack[selectedLang].rolling;
+spinAngleStart = Math.random() * 10 + 10; spinTime = 0;
+spinTimeTotal = Math.random() * 3000 + 4000; isSpinning = true;
+rotateWheel();
+}
+});
+
+function rotateWheel() {
+spinTime += 30;
+if(spinTime >= spinTimeTotal) { stopRotateWheel(); return; }
+let spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+startAngle += (spinAngle * Math.PI / 180);
+drawWheel();
+setTimeout(rotateWheel, 30);
+}
+
+function stopRotateWheel() {
+isSpinning = false;
+let degrees = startAngle * 180 / Math.PI + 90;
+let arcd = arc * 180 / Math.PI;
+let index = Math.floor((360 - (degrees % 360)) / arcd);
+if (index < 0) index = numSectors + index;
+
+const finalSector = sectors[index];
+document.getElementById('casino-result').textContent = `${langPack[selectedLang].dropped}: ${finalSector.label}`;
+finalSector.reward();
+updateUI(); save();
+}
+
+function easeOut(t, b, c, d) { let ts = (t /= d) * t, tc = ts * t; return b + c * (tc + -3 * ts + 3 * t); }
+
+// Табы
+document.getElementById('tab-upgrades').addEventListener('click', () => {
+document.getElementById('upgrades-content').classList.remove('hidden');
+document.getElementById('invest-content').classList.add('hidden');
+document.getElementById('tab-upgrades').classList.add('active');
+document.getElementById('tab-invest').classList.remove('active');
+});
+document.getElementById('tab-invest').addEventListener('click', () => {
+document.getElementById('invest-content').classList.remove('hidden');
+document.getElementById('upgrades-content').classList.add('hidden');
+document.getElementById('tab-invest').classList.add('active');
+document.getElementById('tab-upgrades').classList.remove('active');
+});
+
+function save() { localStorage.setItem('cyber_universe_save_v3', JSON.stringify(state)); }
+document.getElementById('reset-btn').addEventListener('click', () => { if(confirm('Wipe data?')) { localStorage.clear(); location.reload(); } });
+
+// Старт
+applyLocalization();
+tickMarket();
 });
 </script>
-<script data-goatcounter="https://oboba3675.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
